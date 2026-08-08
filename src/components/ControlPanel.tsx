@@ -1,9 +1,11 @@
 
-import { DotDisplayOption, MusicKey} from '../types/music';
+import { DotDisplayOption, MusicKey } from '../types/music';
 //import CircleOfFifths from './util/CircleOfFifths';
 import CircleOfFifths from './CircleOfFifths';
 //import { FingeringType } from './util/berkleeDictionary';
 //import { FingeringKey } from './util/berkleeDictionary';
+import { useState, useEffect } from 'react';
+
 
 import { FingeringType, LockMode } from '../types/music';
 
@@ -96,27 +98,77 @@ export default function ControlPanel({
     position,
     handlePositionChange,
 
-
-
     showPositionBox,
     setShowPositionBox
 }: ControlPanelProps) {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        // Cleanup the listener when the component is destroyed
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+
+
+
     return (
         <div
-            style={{ 
-                width: '300px', /* Fixed width */
-                minWidth: '300px', /* Prevent squishing */
-                height: '100%',
+            style={{
+                width: isMobile ? '100vw' : '300px',
+                height: isMobile ? (isSidebarOpen ? '100vh' : '60px') : '100vh',
+                minWidth: isMobile ? '100vw' : '300px',
                 backgroundColor: '#d9b99b',
-                boxShadow: '4px 0 15px rgba(0,0,0,0.2)', /* Shadow on the right side */
+                boxShadow: isMobile ? '0 -4px 15px rgba(0,0,0,0.2)' : '4px 0 15px rgba(0,0,0,0.2)',
                 padding: '20px',
-                overflowY: 'auto', /* Add scrollbar if panel gets too tall */
-                zIndex: 50, /* Keep it above the fretboard */
-                transition: 'transform 0.3s ease',
-                transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
-                position: 'relative' /* Changed from absolute! */
+                overflowY: 'auto', // Allows scrolling inside the panel
+                zIndex: 50,
+                transition: 'transform 0.3s ease, height 0.3s ease',
+                // Desktop slides left/right. Mobile slides up/down.
+                transform: isMobile
+                    ? (isSidebarOpen ? 'translateY(0)' : 'translateY(calc(100vh - 60px))')
+                    : (isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)'),
+                position: 'fixed', // Pins it to the glass of the screen
+                left: 0,
+                bottom: 0,
             }}
         >
+            {/* The Edge Toggle Bar */}
+            <div
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                style={{
+                    position: 'absolute',
+                    top: isMobile ? 0 : '50%',
+                    right: isMobile ? '50%' : '-20px',
+                    transform: isMobile ? 'translateX(50%)' : 'translateY(-50%)',
+                    width: isMobile ? '100px' : '20px',
+                    height: isMobile ? '20px' : '100px',
+                    backgroundColor: '#b89b7d',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    borderTopRightRadius: '8px', // Both mobile and desktop need this one!
+                    borderBottomRightRadius: isMobile ? 0 : '8px',
+                    borderTopLeftRadius: isMobile ? '8px' : 0,
+                    borderBottomLeftRadius: 0,
+                    boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
+                }}
+            >
+                <span style={{
+                    fontWeight: 'bold',
+                    color: '#fff',
+                    // Rotate the arrow depending on open state and screen size
+                    transform: isMobile
+                        ? (isSidebarOpen ? 'rotate(90deg)' : 'rotate(-90deg)')
+                        : (isSidebarOpen ? 'rotate(180deg)' : 'rotate(0deg)'),
+                    transition: 'transform 0.3s ease'
+                }}>
+                    ▶
+                </span>
+            </div>
+
             <h2>Controls</h2>
 
             {/* Global Options */}

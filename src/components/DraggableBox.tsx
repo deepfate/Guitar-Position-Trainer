@@ -7,7 +7,12 @@ interface DraggableBoxProps {
     children: React.ReactNode;
 }
 
-export default function DraggableBox({ title, defaultX, defaultY, children }: DraggableBoxProps) {
+export default function DraggableBox({
+    title,
+    defaultX,
+    defaultY,
+    children
+}: DraggableBoxProps) {
     const [position, setPosition] = useState({ x: defaultX, y: defaultY });
     const [isDragging, setIsDragging] = useState(false);
     

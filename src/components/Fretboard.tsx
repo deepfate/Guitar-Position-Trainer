@@ -71,11 +71,11 @@ import React, { useMemo, useState, useRef } from 'react';
 import { generateFretboard } from '../util/Fretboard';
 import { Scale, Note } from '@tonaljs/tonal';
 import './Fretboard.css';
-import ControlPanel from './ControlPanel';
+//import ControlPanel from './ControlPanel';
 import { berkleeDictionary, rootDefinitions } from '../util/berkleeDictionary';
 
 // Defining props interface
-import { DotDisplayOption, FretNode, MusicKey, FingeringType, LockMode} from '../types/music';
+import { FretNode, MusicKey, FingeringType, LockMode} from '../types/music';
 import { CHROMA_TO_KEY } from '../types/music';
 
 // Define the exact shape of the props comings from Apps.tsx
@@ -141,12 +141,6 @@ export default function Fretboard({
     //const [lockMode, setLockMode] = useState<LockMode>('none');
     // TO BE DELETED, REPLACED BY THE ABOVE.
     // const [isKeyLocked, setIsKeyLocked] = useState(false);
-
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [dotDisplay, setDotDisplay] = useState<DotDisplayOption>('fingers');
-    const [dotShowAll, setDotShowAll] = useState(false);
-    const [showStretches, setShowStretches] = useState(true);
-    const [fretInlayState, setFretInlayState] = useState(true);
 
 
     // --- STATES: Position Box --- //
@@ -420,49 +414,7 @@ export default function Fretboard({
         }}>  
             {/* --- UI CONTROLS --- */}
             <div className="dashboard-layout">
-                <button
-                    className="menu-toggle"
-                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                >
-                    {isSidebarOpen ? 'Hide Controls' : 'Show Controls'}
-                </button>
 
-                <ControlPanel
-                    isSidebarOpen={isSidebarOpen}
-
-                    //isKeyLocked={isKeyLocked}
-                    //setIsKeyLocked={setIsKeyLocked}
-
-                    currentKeyName={currentKeyName}
-
-                    dotDisplay={dotDisplay}
-                    setDotDisplay={setDotDisplay}
-
-                    dotShowAll={dotShowAll}
-                    setDotShowAll={setDotShowAll}
-
-                    showStretches={showStretches}
-                    setShowStretches={setShowStretches}
-
-                    lockMode={lockMode}
-                    setLockMode={setLockMode}
-
-                    // fretInlayState = {fretInlayState}
-                    // setFretInlayState = {setFretInlayState}
-
-                    fingeringType={fingeringType}
-                    //setFingeringType={setFingeringType}
-                    handleTypeChange={handleTypeChange}
-
-                    //newKey={newKey} <-- I think this can be replaced with currentKeyName instead. 
-                    handleKeyChange={handleKeyChange}
-
-                    position={position}
-                    handlePositionChange={handlePositionChange}
-
-                    showPositionBox={showPositionBox}
-                    setShowPositionBox={setShowPositionBox}
-                />
 
                 {/* --- FRETBOARD UI --- */}
                 <div
