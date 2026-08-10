@@ -1,13 +1,8 @@
 
-import { DotDisplayOption, MusicKey } from '../types/music';
-//import CircleOfFifths from './util/CircleOfFifths';
+import { DotDisplayOption, MusicKey, FingeringType, LockMode } from '../types/music';
 import CircleOfFifths from './CircleOfFifths';
-//import { FingeringType } from './util/berkleeDictionary';
-//import { FingeringKey } from './util/berkleeDictionary';
 import { useState, useEffect } from 'react';
-
-
-import { FingeringType, LockMode } from '../types/music';
+import './ControlPanel.css'
 
 const fingeringKeyOrder: FingeringType[] = [ // fingeringKeyOrder acts as a bridge between Fingering Type slider and the strings.
     'type1', 'type1A', 'type1B', 'type1C', 'type1D',
@@ -21,6 +16,7 @@ const fingeringKeyOrder: FingeringType[] = [ // fingeringKeyOrder acts as a brid
 interface ControlPanelProps {
     /** Panel Open/Close state */
     isSidebarOpen: boolean;
+    setIsSidebarOpen: (isOpen: boolean) => void;
 
     /** */
     currentKeyName: MusicKey;
@@ -70,7 +66,7 @@ interface ControlPanelProps {
  */
 export default function ControlPanel({
     isSidebarOpen,
-
+    setIsSidebarOpen,
     //isKeyLocked,
     //setIsKeyLocked,
 
@@ -111,10 +107,9 @@ export default function ControlPanel({
     }, []);
 
 
-
-
     return (
         <div
+            className='control-panel-container'
             style={{
                 width: isMobile ? '100vw' : '300px',
                 height: isMobile ? (isSidebarOpen ? '100vh' : '60px') : '100vh',

@@ -71,11 +71,11 @@ import React, { useMemo, useState, useRef } from 'react';
 import { generateFretboard } from '../util/Fretboard';
 import { Scale, Note } from '@tonaljs/tonal';
 import './Fretboard.css';
-//import ControlPanel from './ControlPanel';
+import ControlPanel from './ControlPanel';
 import { berkleeDictionary, rootDefinitions } from '../util/berkleeDictionary';
 
 // Defining props interface
-import { FretNode, MusicKey, FingeringType, LockMode} from '../types/music';
+import { DotDisplayOption, FretNode, MusicKey, FingeringType, LockMode } from '../types/music';
 import { CHROMA_TO_KEY } from '../types/music';
 
 // Define the exact shape of the props comings from Apps.tsx
@@ -88,6 +88,11 @@ interface FretboardProps {
     setLockMode: (mode: LockMode) => void;
     position: number;
     setPosition: (pos: number) => void;
+    dotShowAll: boolean;
+    dotDisplay: DotDisplayOption;
+    showStretches: boolean;
+    handlePositionChange: (newPos: number) => void;
+
 }
 
 /** Defines which frets should have a single fret dot.
@@ -128,8 +133,13 @@ export default function Fretboard({
     lockMode,
     setLockMode,
     position,
-    setPosition
- }: FretboardProps) {
+    setPosition,
+    dotShowAll,
+    dotDisplay,
+    showStretches,
+    handlePositionChange
+
+}: FretboardProps) {
     // Generate the fretboard data once. 
     // If we add alternate tunings later, we will add the tuning state to the dependency array [].
     const fretboardData = useMemo<FretNode[][]>(() => generateFretboard(), []);
@@ -194,15 +204,15 @@ export default function Fretboard({
         if (!rootStringData) return "C";
 
         const rootNoteData = rootStringData.find(f => f.fret === position + rootDef.offset);
-        
-        if(!rootNoteData || rootNoteData.chroma === undefined) return 'C';
+
+        if (!rootNoteData || rootNoteData.chroma === undefined) return 'C';
 
         // 100% safe at runtime. If Tonal gives us D# (chroma 3), this safely returns Eb (MusicKey)
         return CHROMA_TO_KEY[rootNoteData.chroma];
 
         //return rootNoteData ? rootNoteData.pitchClass : "";
 
-    
+
     }, [fretboardData, position, fingeringType]);
 
     /**
@@ -228,124 +238,8 @@ export default function Fretboard({
         return scaleNotes.map(noteName => Note.get(noteName).chroma);
     }, [currentKeyName]);
 
-    // --- POSITION CHANGING / KEY LOCKING ALGORITHM --- //
-    // --- REVERSE LOOKUP --- //
-    // --- This function will fire everytime the user moves the slider. --- //
-    /**
-     * 
-     * @param newPosition 
-     * @returns 
-     */
-    const handlePositionChange = (newPosition: number) => {
-        if (lockMode === 'position') return;
 
-        if (lockMode === 'none') {
-            setPosition(newPosition);
-            return;
-        }
 
-        // --- KEY LOCKING ALGORITHM --- //
-        // We need to know what key we are currently trying to lock.
-        // Loop through the types in rootDefinitions, using Object.entries()
-        //      For each type, calculate its absolute fret (newPosition + offset).    
-        //      Compare pitchClass property. If current fret's note name is our target,
-        //          Update the state with the string key (type 1, type2, etc) and exit function.
-        //          Else, loop will finish without finding a match, never updating the state. This means the position box will ignore the slider.
-        const targetKey = currentKeyName;
-
-        for (const [typeKey, typeData] of Object.entries(rootDefinitions)) {
-            const absoluteFret = newPosition + typeData.offset;
-            if (absoluteFret >= 0 && absoluteFret < fretboardData[0].length) { // Safety Check: Ensures the fret exists on our fretboard before checking it
-                const fretNode = fretboardData[typeData.string][absoluteFret];
-                if (fretNode.pitchClass === targetKey) {
-                    setFingeringType(typeKey as FingeringType);
-                    setPosition(newPosition);
-                    return;
-                }
-            }
-        }
-    };
-
-    const handleTypeChange = (newType: FingeringType) => {
-        // Check that position is locked. If so, then position box must be moved to maintain the key.
-        if (lockMode === 'key') {
-            const targetKey = currentKeyName;
-            const newRootDef = rootDefinitions[newType];
-
-            // Search fretboard on the new type's root string to find the target note
-            const stringNotes = fretboardData[newRootDef.string];
-            const targetNote = stringNotes.find(fret => fret.pitchClass === targetKey);
-
-            if (targetNote) {
-                // Calculate position the box needs to be in
-                let newPosition = targetNote.fret - newRootDef.offset;
-
-                // Clamp so box doesn't go flying if a wierd stretch is chosen
-                if (newPosition < 1) newPosition += 12;
-                if (newPosition > 24) newPosition -= 12;
-
-                setPosition(newPosition);
-                setFingeringType(newType);
-            }
-            return;
-        }
-        // If lockMode is 'position' or 'none'm just change the type.
-        // Position box will stay where it is and currentKeyName useMemo() will auto-update the key.
-        setFingeringType(newType);
-    }
-
-    const handleKeyChange = (newTargetKey: MusicKey) => {
-        // Get numeric pitch value of the incoming key
-        const targetChroma = Note.get(newTargetKey).chroma
-
-        // Position Locked 
-        // If position is locked, we must change the fingering type to match the new key
-        if (lockMode === 'position') {
-            for (const [typeKey, typeData] of Object.entries(rootDefinitions)) {
-                const absoluteFret = position + typeData.offset;
-                if (absoluteFret >= 0 && absoluteFret < fretboardData[0].length) {
-                    const fretNode = fretboardData[typeData.string][absoluteFret];
-                    // If this shape at our locked position produces the new key, select it.
-                    const fretChroma = Note.get(fretNode.pitchClass).chroma;
-                    //if (fretNode.pitchClass === newKey) {
-                    if (fretChroma === targetChroma) {
-                        setFingeringType(typeKey as FingeringType);
-                        // Could also add a state here to show a warning if NO shape fits the key at this position.
-
-                        setCurrentKey(newTargetKey);
-                        return;
-                    }
-                }
-            }
-            return;
-        }
-
-        // Key Locked
-        if (lockMode === 'key') return;
-
-        // Free Mode: lockMode === 'none'
-        // Changing key in free mode usually means fingering type stays the same while the position is changed.
-        const rootDef = rootDefinitions[fingeringType];
-        const stringNotes = fretboardData[rootDef.string];
-
-        const targetNode = stringNotes.find(fret =>
-            Note.get(fret.pitchClass).chroma === targetChroma
-        );
-
-        // Find where the new root note lives on the current string
-        //const targetNote = stringNotes.find(fret => fret.pitchClass === newKey);
-
-        if (targetNode) {
-            let calculatedPosition = targetNode.fret - rootDef.offset;
-
-            // Clamp so box doesn't go flying if a wierd stretch is chosen
-            if (calculatedPosition < 1) calculatedPosition += 12;
-            if (calculatedPosition > 24) calculatedPosition -= 12;
-
-            setPosition(calculatedPosition);
-            setCurrentKey(newTargetKey);
-        }
-    }
 
 
     // --- POSITION BOX DRAGGING --- //
@@ -411,7 +305,7 @@ export default function Fretboard({
             justifyContent: 'flex-start', /* Align left so it scrolls properly */
             overflowX: 'auto', /* Add horizontal scrollbar if needed */
             padding: '40px', /* Give it some breathing room */
-        }}>  
+        }}>
             {/* --- UI CONTROLS --- */}
             <div className="dashboard-layout">
 
@@ -501,8 +395,6 @@ export default function Fretboard({
                                                     {dotDisplay === 'notes' && fretData.pitchClass}
                                                 </div>
                                             )}
-
-
                                     </div>
                                 );
                             })}
