@@ -1,7 +1,11 @@
 import { DotDisplayOption, MusicKey, FingeringType, LockMode } from '../types/music';
 import CircleOfFifths from './CircleOfFifths';
 import { useState, useEffect } from 'react';
-import './ControlPanel.css'
+import './ControlPanel.css';
+
+import RootMatrix from './selectors/RootMatrix';
+import MiniNeck from './selectors/MiniNeck';
+import KaossPad from './selectors/KaossPad';
 
 import { useMusicStore } from '../store/useMusicStore';
 
@@ -43,6 +47,9 @@ export default function ControlPanel() {
         setDotShowAll, setShowStretches, handleTypeChange, handlePositionChange, handleKeyChange
     } = useMusicStore();
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    const [selectorMode, setSelectorMode] = useState<'minineck' | 'grid' | 'xypad' | 'matrix'>('matrix');
+
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -103,23 +110,48 @@ export default function ControlPanel() {
                     </span>
                 </div>
 
-                {/* 2. FINGERING TYPE */}
+                {/* 2. FINGERING TYPE (PROTOTYPE SWITCHBOARD) */}
                 <div className="control-section">
-                    <label>Fingering Type:</label>
-                    <span className="control-panel-value">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <label>Fingering Type:</label>
+                        <select
+                            value={selectorMode}
+                            onChange={(e) => setSelectorMode(e.target.value as any)}
+                            style={{ fontSize: '0.7rem', padding: '2px' }}
+                        >
+                            <option value="xypad">XY Kaoss Pad</option> {/* NEW */}
+                            <option value="minineck">Mini-Neck</option>
+                            <option value="matrix">2D Matrix</option>
+                            <option value="grid">Linear Grid</option>
+                        </select>
+                    </div>
+
+                    <span className="control-panel-value" style={{ minHeight: '1.2rem' }}>
                         {FINGERING_LABELS[fingeringType]}
                     </span>
-                    <input
-                        type="range"
-                        min="1"
-                        max="12"
-                        value={fingeringKeyOrder.indexOf(fingeringType) + 1}
-                        disabled={lockMode === 'key'}
-                        onChange={(e) => {
-                            const index = Number(e.target.value) - 1;
-                            handleTypeChange(fingeringKeyOrder[index]);
-                        }}
-                    />
+
+                    {/* Render the selected prototype */}
+                    {selectorMode === 'matrix' && <RootMatrix />}
+                    {selectorMode === 'minineck' && <MiniNeck />}
+                    {selectorMode === 'xypad' && <KaossPad />}
+                    {selectorMode === 'grid' && (
+                        <div className="shape-grid">
+                            {selectorMode === 'grid' && (
+                                <div className="shape-grid">
+                                    {fingeringKeyOrder.map((typeKey) => (
+                                        <button
+                                            key={typeKey}
+                                            className={`shape-btn ${fingeringType === typeKey ? 'active' : ''}`}
+                                            disabled={lockMode === 'key'}
+                                            onClick={() => handleTypeChange(typeKey)}
+                                        >
+                                            {typeKey.replace('type', '')}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* 3. POSITION SLIDER */}
