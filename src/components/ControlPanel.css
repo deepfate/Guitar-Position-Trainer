@@ -1,3 +1,183 @@
-.control-panel-container {
-    
+/* --- Base Styles (Desktop First) --- */
+.control-panel-wrapper {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    transition: transform 0.3s ease, height 0.3s ease;
+
+    /* Desktop Sizing */
+    width: 300px;
+    min-width: 300px;
+    height: 100vh;
+}
+
+/* Desktop Open/Closed Animations */
+.control-panel-wrapper.open {
+    transform: translateX(0);
+}
+
+.control-panel-wrapper.closed {
+    transform: translateX(-100%);
+}
+
+/* --- Inner Content Box --- */
+.control-panel-content {
+    width: 100%;
+    height: 100%;
+    background-color: #d9b99b;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Desktop: Shadow on the right edge */
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* --- The Edge Toggle Bar --- */
+.control-panel-toggle {
+    position: absolute;
+    top: 50%;
+    right: -20px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 100px;
+    background-color: #b89b7d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.control-panel-arrow {
+    font-weight: bold;
+    color: #fff;
+    transition: transform 0.3s ease;
+}
+
+/* Desktop Arrow Rotation Logic */
+.control-panel-wrapper.open .control-panel-arrow {
+    transform: rotate(180deg);
+}
+
+.control-panel-wrapper.closed .control-panel-arrow {
+    transform: rotate(0deg);
+}
+
+/* --- Segmented Control --- */
+.segmented-control {
+    display: flex;
+    background-color: #c7a78b; /* Slightly darker than the panel's tan background */
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+    width: 100%;
+}
+
+.segment-btn {
+    flex: 1; /* Makes all buttons equal width */
+    background: transparent;
+    border: none;
+    color: #555;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 6px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.segment-btn:hover {
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.segment-btn.active {
+    background-color: #fff;
+    color: #000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.helper-text {
+    font-size: 0.8rem;
+    color: #444;
+    font-style: italic;
+    min-height: 1.2rem; /* Prevents layout jumping when text changes */
+}
+
+/* --- Text Styles --- */
+.control-panel-value {
+    color: black;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* --- Section Wrappers --- */
+.control-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+    color: black;
+}
+
+/* --- Automatically style ALL labels inside a control section --- */
+.control-section label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    /* If you have checkboxes inside labels, this keeps them aligned */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* --- Mobile Overrides (Triggered automatically on small screens) --- */
+@media (max-width: 768px) {
+    .control-panel-wrapper {
+        /* Mobile Sizing */
+        width: 100vw;
+        min-width: 100vw;
+    }
+
+    /* Mobile Open/Closed Animations */
+    .control-panel-wrapper.open {
+        height: 100vh;
+        transform: translateY(0);
+    }
+
+    .control-panel-wrapper.closed {
+        height: 60px;
+        transform: translateY(calc(100vh - 60px));
+    }
+
+    .control-panel-content {
+        /* Mobile: Shadow on the top edge */
+        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Mobile Toggle Bar Positioning */
+    .control-panel-toggle {
+        top: 0;
+        right: 50%;
+        transform: translateX(50%);
+        width: 100px;
+        height: 20px;
+        border-top-right-radius: 8px;
+        border-top-left-radius: 8px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    /* Mobile Arrow Rotation Logic */
+    .control-panel-wrapper.open .control-panel-arrow {
+        transform: rotate(90deg);
+    }
+
+    .control-panel-wrapper.closed .control-panel-arrow {
+        transform: rotate(-90deg);
+    }
 }

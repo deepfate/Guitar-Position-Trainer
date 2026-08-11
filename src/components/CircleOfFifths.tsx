@@ -1,12 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { MusicKey } from '../types/music';
 import { Note } from '@tonaljs/tonal';
 import { useMusicStore } from '../store/useMusicStore';
 
-/* interface CircleOfFifthsProps {
-    currentKeyName: MusicKey;
-    onKeyChange: (newKey: MusicKey) => void;
-} */
 interface CircleKey {
     name: MusicKey;
     chroma: number;
