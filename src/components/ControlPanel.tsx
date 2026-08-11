@@ -106,20 +106,24 @@ export default function ControlPanel() {
                 {/* 2. FINGERING TYPE */}
                 <div className="control-section">
                     <label>Fingering Type:</label>
-                    <span className="control-panel-value">
+                    <span className="control-panel-value" style={{ minHeight: '1.2rem' }}>
                         {FINGERING_LABELS[fingeringType]}
                     </span>
-                    <input
-                        type="range"
-                        min="1"
-                        max="12"
-                        value={fingeringKeyOrder.indexOf(fingeringType) + 1}
-                        disabled={lockMode === 'key'}
-                        onChange={(e) => {
-                            const index = Number(e.target.value) - 1;
-                            handleTypeChange(fingeringKeyOrder[index]);
-                        }}
-                    />
+
+                    {/* The New Shape Grid */}
+                    <div className="shape-grid">
+                        {fingeringKeyOrder.map((typeKey) => (
+                            <button
+                                key={typeKey}
+                                className={`shape-btn ${fingeringType === typeKey ? 'active' : ''}`}
+                                disabled={lockMode === 'key'}
+                                onClick={() => handleTypeChange(typeKey)}
+                            >
+                                {/* Display just the short code, e.g., "1A" or "4" */}
+                                {typeKey.replace('type', '')}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* 3. POSITION SLIDER */}
