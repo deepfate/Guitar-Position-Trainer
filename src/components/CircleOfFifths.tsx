@@ -1,38 +1,41 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MusicKey } from '../types/music';
 import { Note } from '@tonaljs/tonal';
+import { useMusicStore } from '../store/useMusicStore';
 
-interface CircleOfFifthsProps {
+/* interface CircleOfFifthsProps {
     currentKeyName: MusicKey;
     onKeyChange: (newKey: MusicKey) => void;
-}
-
+} */
 interface CircleKey {
     name: MusicKey;
     chroma: number;
 }
 
-const circleKeys: CircleKey[] = [
-    { name: 'C', chroma: 0 },
-    { name: 'G', chroma: 7 },
-    { name: 'D', chroma: 2 },
-    { name: 'A', chroma: 9 },
-    { name: 'E', chroma: 4 },
-    { name: 'B', chroma: 11 },
-    { name: 'F#', chroma: 6 },
-    { name: 'Db', chroma: 1 }, // Chroma 1 matches both C# and Db!
-    { name: 'Ab', chroma: 8 }, // Chroma 8 matches both G# and Ab!
-    { name: 'Eb', chroma: 3 },
-    { name: 'Bb', chroma: 10 },
-    { name: 'F', chroma: 5 }
-];
-
-export default function CircleOfFifths({ currentKeyName, onKeyChange }: CircleOfFifthsProps) {
+//export default function CircleOfFifths({ currentKeyName, onKeyChange }: CircleOfFifthsProps) {
+export default function CircleOfFifths() {
+    const { currentKey, handleKeyChange } = useMusicStore();
     const wheelRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
 
+    const circleKeys: CircleKey[] = [
+        { name: 'C', chroma: 0 },
+        { name: 'G', chroma: 7 },
+        { name: 'D', chroma: 2 },
+        { name: 'A', chroma: 9 },
+        { name: 'E', chroma: 4 },
+        { name: 'B', chroma: 11 },
+        { name: 'F#', chroma: 6 },
+        { name: 'Db', chroma: 1 }, // Chroma 1 matches both C# and Db!
+        { name: 'Ab', chroma: 8 }, // Chroma 8 matches both G# and Ab!
+        { name: 'Eb', chroma: 3 },
+        { name: 'Bb', chroma: 10 },
+        { name: 'F', chroma: 5 }
+    ];
+
+
     // Get the chroma of the incoming key from the fretboard (handles enharmonics dynamically)
-    const currentKeyChroma = Note.get(currentKeyName).chroma;
+    const currentKeyChroma = Note.get(currentKey).chroma;
 
     // Helper to calculate which note index (0 - 11) the mouse/pointer is currently aiming at.
     const getTargetIndexFromPointer = (clientX: number, clientY: number): number => {
@@ -61,7 +64,9 @@ export default function CircleOfFifths({ currentKeyName, onKeyChange }: CircleOf
 
         // Update key on initial click
         const index = getTargetIndexFromPointer(e.clientX, e.clientY);
-        onKeyChange(circleKeys[index].name);
+
+        handleKeyChange(circleKeys[index].name);
+        //onKeyChange(circleKeys[index].name);
     };
 
     const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -72,7 +77,8 @@ export default function CircleOfFifths({ currentKeyName, onKeyChange }: CircleOf
 
         // Match by CHROMA value instead of string name to bridge sharps and flats smoothly
         if (targetKey.chroma !== currentKeyChroma) {
-            onKeyChange(targetKey.name);
+            handleKeyChange(targetKey.name);
+            //onKeyChange(targetKey.name);
         }
     };
 

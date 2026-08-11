@@ -77,9 +77,10 @@ import { berkleeDictionary, rootDefinitions } from '../util/berkleeDictionary';
 // Defining props interface
 import { DotDisplayOption, FretNode, MusicKey, FingeringType, LockMode } from '../types/music';
 import { CHROMA_TO_KEY } from '../types/music';
+import { useMusicStore } from '../store/useMusicStore';
 
 // Define the exact shape of the props comings from Apps.tsx
-interface FretboardProps {
+/* interface FretboardProps {
     currentKey: MusicKey;
     setCurrentKey: (key: MusicKey) => void;
     fingeringType: FingeringType;
@@ -93,7 +94,7 @@ interface FretboardProps {
     showStretches: boolean;
     handlePositionChange: (newPos: number) => void;
 
-}
+} */
 
 /** Defines which frets should have a single fret dot.
  *  The "as const" can be uncommented should you want to make these immutable.
@@ -125,7 +126,7 @@ const circleKeys = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 
  * Handles rendering of strings, frets, inlay markers, active scale shapes / position.
  * @returns 
  */
-export default function Fretboard({
+/* export default function Fretboard({
     currentKey,
     setCurrentKey,
     fingeringType,
@@ -139,7 +140,23 @@ export default function Fretboard({
     showStretches,
     handlePositionChange
 
-}: FretboardProps) {
+}: FretboardProps) { */
+export default function Fretboard() {
+    const {
+        currentKey,
+        //setCurrentKey,
+        fingeringType,
+        //setFingeringType,
+        lockMode,
+        setLockMode,
+        position,
+        showPositionBox,
+        setPosition,
+        dotShowAll,
+        dotDisplay,
+        showStretches,
+        handlePositionChange
+    } = useMusicStore();
     // Generate the fretboard data once. 
     // If we add alternate tunings later, we will add the tuning state to the dependency array [].
     const fretboardData = useMemo<FretNode[][]>(() => generateFretboard(), []);
@@ -154,7 +171,7 @@ export default function Fretboard({
 
 
     // --- STATES: Position Box --- //
-    const [showPositionBox, setShowPositionBox] = useState(true);
+    //const [showPositionBox, setShowPositionBox] = useState(true);
     const [isDragging, setisDragging] = useState(false);
     const dragStartX = useRef(0);
     const dragStartPos = useRef(0);
@@ -197,46 +214,46 @@ export default function Fretboard({
     /**
      * Calculate the current key in position to display to the user.
      */
-    const currentKeyName = useMemo(() => {
-        const rootDef = rootDefinitions[fingeringType];
-        const rootStringData = fretboardData[rootDef.string];
-
-        if (!rootStringData) return "C";
-
-        const rootNoteData = rootStringData.find(f => f.fret === position + rootDef.offset);
-
-        if (!rootNoteData || rootNoteData.chroma === undefined) return 'C';
-
-        // 100% safe at runtime. If Tonal gives us D# (chroma 3), this safely returns Eb (MusicKey)
-        return CHROMA_TO_KEY[rootNoteData.chroma];
-
-        //return rootNoteData ? rootNoteData.pitchClass : "";
-
-
-    }, [fretboardData, position, fingeringType]);
+    /*     const currentKeyName = useMemo(() => {
+            const rootDef = rootDefinitions[fingeringType];
+            const rootStringData = fretboardData[rootDef.string];
+    
+            if (!rootStringData) return "C";
+    
+            const rootNoteData = rootStringData.find(f => f.fret === position + rootDef.offset);
+    
+            if (!rootNoteData || rootNoteData.chroma === undefined) return 'C';
+    
+            // 100% safe at runtime. If Tonal gives us D# (chroma 3), this safely returns Eb (MusicKey)
+            return CHROMA_TO_KEY[rootNoteData.chroma];
+    
+            //return rootNoteData ? rootNoteData.pitchClass : "";
+    
+    
+        }, [fretboardData, position, fingeringType]); */
 
     /**
      * Replacing this with currentScaleChrome() because currentScaleNotes breaks with enharmonics.
      */
     const currentScaleNotes = useMemo(() => {
-        if (!currentKeyName) return [];
+        if (!currentKey) return [];
 
         // Tonal's Scale.get("C major").notes returns ["C", "D", "E", "F", "G", "A", "B"]
-        return Scale.get(`${currentKeyName} major`).notes;
-    }, [currentKeyName]);
+        return Scale.get(`${currentKey} major`).notes;
+    }, [currentKey]);
 
     /**
      * Get all notes in current position's key.
      */
     const currentScaleChroma = useMemo(() => {
-        if (!currentKeyName) return [];
+        if (!currentKey) return [];
 
         // Get notes in current key.
-        const scaleNotes = Scale.get(`${currentKeyName} major`).notes;
+        const scaleNotes = Scale.get(`${currentKey} major`).notes;
 
         // Convert them to their numeric chroma values. Tonals.js uses "chroma" (ints) for pitches. 0 = [C, B#], 1 = [C#, Db], etc...
         return scaleNotes.map(noteName => Note.get(noteName).chroma);
-    }, [currentKeyName]);
+    }, [currentKey]);
 
 
 

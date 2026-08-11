@@ -4,6 +4,8 @@ import CircleOfFifths from './CircleOfFifths';
 import { useState, useEffect } from 'react';
 import './ControlPanel.css'
 
+import { useMusicStore } from '../store/useMusicStore';
+
 const fingeringKeyOrder: FingeringType[] = [ // fingeringKeyOrder acts as a bridge between Fingering Type slider and the strings.
     'type1', 'type1A', 'type1B', 'type1C', 'type1D',
     'type2', 'type3',
@@ -11,92 +13,16 @@ const fingeringKeyOrder: FingeringType[] = [ // fingeringKeyOrder acts as a brid
 ];
 
 
-
-/** Props for the Control Panel */
-interface ControlPanelProps {
-    /** Panel Open/Close state */
-    isSidebarOpen: boolean;
-    setIsSidebarOpen: (isOpen: boolean) => void;
-
-    /** */
-    currentKeyName: MusicKey;
-
-    /** Allow user to choose what is shown inside fret dots. */
-    dotDisplay: DotDisplayOption;
-    /** */
-    setDotDisplay: (display: DotDisplayOption) => void;
-
-    /** Toggles display of all fret dots. */
-    dotShowAll: boolean;
-    /** */
-    setDotShowAll: (display: boolean) => void;
-
-    showStretches: boolean;
-    setShowStretches: (display: boolean) => void;
-
-    lockMode: LockMode;
-    setLockMode: (mode: LockMode) => void;
-
-    /** Toggles fret inlay dots */
-    // fretInlayState: boolean;
-    // setFretInlayState: (display: boolean) => void;
-
-    /** */
-    fingeringType: FingeringType;
-    /** */
-    //setFingeringType: (type: FingeringType) => void;
-    handleTypeChange: (type: FingeringType) => void;
-
-    // newKey: string; <-- I think this can be replaced with currentKeyName instead. 
-    handleKeyChange: (key: MusicKey) => void;
-
-    /** */
-    position: number;
-    /** */
-    handlePositionChange: (newPosition: number) => void;
-
-    /** */
-    showPositionBox: boolean;
-    /** */
-    setShowPositionBox: (isVisible: boolean) => void;
-}
-
 /**
  * 
  */
-export default function ControlPanel({
-    isSidebarOpen,
-    setIsSidebarOpen,
-    //isKeyLocked,
-    //setIsKeyLocked,
-
-    currentKeyName,
-
-    dotDisplay,
-    setDotDisplay,
-
-    dotShowAll,
-    setDotShowAll,
-
-    // fretInlayState,
-    // setFretInlayState,
-
-    lockMode,
-    setLockMode,
-
-    fingeringType,
-    //setFingeringType,
-    handleTypeChange,
-
-    //newKey,
-    handleKeyChange,
-
-    position,
-    handlePositionChange,
-
-    showPositionBox,
-    setShowPositionBox
-}: ControlPanelProps) {
+export default function ControlPanel() {
+    const {
+        currentKey, fingeringType, lockMode, position,
+        isSidebarOpen, showPositionBox, dotDisplay, dotShowAll, showStretches,
+        setLockMode, setIsSidebarOpen, setShowPositionBox, setDotDisplay,
+        setDotShowAll, setShowStretches, handleTypeChange, handlePositionChange, handleKeyChange
+    } = useMusicStore();
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
     useEffect(() => {
@@ -140,7 +66,7 @@ export default function ControlPanel({
                 {/* Global Options */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginBottom: '15px', color: 'black' }}>
                     <span className='key-display-text'>
-                        Key: {currentKeyName} Major
+                        Key: {currentKey} Major
                     </span>
                     {/* Position Box Toggle */}
                     <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.9rem' }}>
@@ -248,10 +174,10 @@ export default function ControlPanel({
                 </div>
 
 
-                <CircleOfFifths
-                    currentKeyName={currentKeyName}
+                {/*  <CircleOfFifths
+                    currentKeyName={currentKey}
                     onKeyChange={handleKeyChange}
-                />
+                /> */}
 
             </div>
 
