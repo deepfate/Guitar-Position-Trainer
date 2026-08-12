@@ -6,6 +6,7 @@ import './ControlPanel.css';
 import RootMatrix from './selectors/RootMatrix';
 import MiniNeck from './selectors/MiniNeck';
 import KaossPad from './selectors/KaossPad';
+import FingerMatrix from './selectors/FingerMatrix';
 
 import { useMusicStore } from '../store/useMusicStore';
 
@@ -48,7 +49,7 @@ export default function ControlPanel() {
     } = useMusicStore();
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-    const [selectorMode, setSelectorMode] = useState<'minineck' | 'grid' | 'xypad' | 'matrix'>('matrix');
+    const [selectorMode, setSelectorMode] = useState<'minineck' | 'grid' | 'xypad' | 'fingerMatrix' | 'rootMatrix'>('fingerMatrix');
 
 
     useEffect(() => {
@@ -119,9 +120,10 @@ export default function ControlPanel() {
                             onChange={(e) => setSelectorMode(e.target.value as any)}
                             style={{ fontSize: '0.7rem', padding: '2px' }}
                         >
-                            <option value="xypad">XY Kaoss Pad</option> {/* NEW */}
+                            <option value="xypad">XY Kaoss Pad</option>
                             <option value="minineck">Mini-Neck</option>
-                            <option value="matrix">2D Matrix</option>
+                            <option value="rootMatrix">2D Matrix - Root</option>
+                            <option value="fingerMatrix">2D Matrix - Starting Finger</option>
                             <option value="grid">Linear Grid</option>
                         </select>
                     </div>
@@ -131,7 +133,8 @@ export default function ControlPanel() {
                     </span>
 
                     {/* Render the selected prototype */}
-                    {selectorMode === 'matrix' && <RootMatrix />}
+                    {selectorMode === 'rootMatrix' && <RootMatrix />}
+                    {selectorMode === 'fingerMatrix' && <FingerMatrix />}
                     {selectorMode === 'minineck' && <MiniNeck />}
                     {selectorMode === 'xypad' && <KaossPad />}
                     {selectorMode === 'grid' && (

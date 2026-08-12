@@ -18,22 +18,16 @@ const FINGERING_LABELS: Record<string, string> = {
     'type4D': 'Type 4D (Root on 5th, Fret 3)'
 };
 
-export default function RootMatrix() {
+export default function FingerMatrix() {
     const { fingeringType, handleTypeChange, lockMode } = useMusicStore();
 
     // Track if the user is currently holding the mouse/finger down
     const [isDragging, setIsDragging] = useState(false);
 
-    /*     const matrix: (FingeringType | null)[][] = [
-            ['type1A', 'type1D', 'type2', 'type4C', 'type4'], // 6th String (E)
-            ['type1B', 'type1', 'type4B', 'type4D', 'type3'], // 5th String (A)
-            ['type1C', 'type4A', null, null, null],           // 4th String (D)
-        ]; */
-
     const matrix: (FingeringType | null)[][] = [
         ['type1C', 'type4A', null, null, null],           // 4th String (D)
-        ['type1B', 'type1', 'type4B', 'type4D', 'type3'], // 5th String (A)
-        ['type1A', 'type1D', 'type2', 'type4C', 'type4'], // 6th String (E)
+        ['type1B', 'type4B', 'type1', 'type4D', 'type3'], // 5th String (A)
+        ['type1A', 'type4C', 'type2', 'type1D', 'type4'], // 6th String (E)
     ];
 
     // The Magic Function: Finds what button is under the pointer
