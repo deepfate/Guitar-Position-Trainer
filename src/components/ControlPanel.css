@@ -71,7 +71,8 @@
 /* --- Segmented Control --- */
 .segmented-control {
     display: flex;
-    background-color: #c7a78b; /* Slightly darker than the panel's tan background */
+    background-color: #c7a78b;
+    /* Slightly darker than the panel's tan background */
     border-radius: 8px;
     padding: 4px;
     gap: 4px;
@@ -79,7 +80,8 @@
 }
 
 .segment-btn {
-    flex: 1; /* Makes all buttons equal width */
+    flex: 1;
+    /* Makes all buttons equal width */
     background: transparent;
     border: none;
     color: #555;
@@ -106,7 +108,8 @@
     font-size: 0.8rem;
     color: #444;
     font-style: italic;
-    min-height: 1.2rem; /* Prevents layout jumping when text changes */
+    min-height: 1.2rem;
+    /* Prevents layout jumping when text changes */
 }
 
 /* --- Text Styles --- */
@@ -145,7 +148,7 @@
 
     /* Mobile Open/Closed Animations */
     .control-panel-wrapper.open {
-        height: 100vh;
+        height: calc(100vh - 30px);
         transform: translateY(0);
     }
 
@@ -163,9 +166,9 @@
     .control-panel-toggle {
         top: 0;
         right: 50%;
-        transform: translateX(50%);
+        transform: translateX(50%, -100%);
         width: 100px;
-        height: 20px;
+        height: 30px;
         border-top-right-radius: 8px;
         border-top-left-radius: 8px;
         border-bottom-right-radius: 0;
