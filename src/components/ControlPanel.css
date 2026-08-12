@@ -148,13 +148,13 @@
 
     /* Mobile Open/Closed Animations */
     .control-panel-wrapper.open {
-        height: calc(100vh - 30px);
+        height: calc(100dvh - 30px);
         transform: translateY(0);
     }
 
     .control-panel-wrapper.closed {
         height: 60px;
-        transform: translateY(calc(100vh - 60px));
+        transform: translateY(calc(100dvh - 60px));
     }
 
     .control-panel-content {
@@ -168,11 +168,12 @@
         right: 50%;
         transform: translateX(50%, -100%);
         width: 100px;
-        height: 30px;
+        height: 40px;
         border-top-right-radius: 8px;
         border-top-left-radius: 8px;
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
+        z-index: 9999;
     }
 
     /* Mobile Arrow Rotation Logic */
