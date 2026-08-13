@@ -9,3 +9,20 @@
   background-color: #f4ebd8;
   position: relative;
 }
+
+.drag-handle {
+  touch-action: none !important;
+  -webkit-user-select: none;
+  user-select: none;
+
+}
+
+/* Shrink the Draggable Box on mobile portrait screens */
+@media (max-width: 768px) {
+    /* If your DraggableBox wrapper has a class name, use it here. 
+       Otherwise, wrap your DraggableBox in <div className="widget-container"> in App.tsx */
+    .widget-container {
+        transform: scale(0.75); /* Shrinks the widget to 75% size */
+        transform-origin: bottom right; /* Anchors it nicely out of the way */
+    }
+}

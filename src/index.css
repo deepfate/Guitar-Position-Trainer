@@ -11,12 +11,19 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* src/index.css */
 
-body {
+html, body {
   margin: 0;
   padding: 0;
-  min-height: 100vh;
-  /* Keep your tan background, but apply it cleanly to the whole page */
-  background-color: antiquewhite;
-  overscroll-behavior-y: none; /* Kills the mobile pull-to-refresh globally! */
+  width: 100vw;
+  height: 100vh;
+  /* THE NUCLEAR OPTION: Locks the native browser page completely */
+  position: fixed; 
+  overflow: hidden; 
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+  background-color: #f4ebd8; /* Prevents white flashes */
 }
+
+/* ... keep your font-family reset rules ... */

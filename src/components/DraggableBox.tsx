@@ -63,7 +63,6 @@ export default function DraggableBox({
 
     return (
         <div
-            onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
@@ -79,14 +78,14 @@ export default function DraggableBox({
                 display: 'inline-flex',
                 flexDirection: 'column',
                 userSelect: 'none',
-                touchAction: 'none',
                 transform: isDragging ? 'scale(1.01)' : 'scale(1)',
                 transition: isDragging ? 'none' : 'transform 0.1s ease, box-shadow 0.1s ease'
             }}
         >
             {/* Grab Handle Bar */}
-            <div 
-                className="box-handle"
+            <div
+                className="drag-handle"
+            onPointerDown={handlePointerDown}
                 style={{
                     backgroundColor: '#333',
                     color: 'white',
@@ -98,7 +97,8 @@ export default function DraggableBox({
                     borderTopRightRadius: '5px',
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                touchAction: 'none',
                 }}
             >
                 {title}
