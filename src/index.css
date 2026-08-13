@@ -18,4 +18,5 @@ body {
   min-height: 100vh;
   /* Keep your tan background, but apply it cleanly to the whole page */
   background-color: antiquewhite;
+  overscroll-behavior-y: none; /* Kills the mobile pull-to-refresh globally! */
 }

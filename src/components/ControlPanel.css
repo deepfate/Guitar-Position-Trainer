@@ -148,13 +148,13 @@
 
     /* Mobile Open/Closed Animations */
     .control-panel-wrapper.open {
-        height: calc(100dvh - 30px);
+        height: calc(100dvh - 80px);
         transform: translateY(0);
     }
 
     .control-panel-wrapper.closed {
         height: 60px;
-        transform: translateY(calc(100dvh - 60px));
+        transform: translateY(0);
     }
 
     .control-panel-content {
