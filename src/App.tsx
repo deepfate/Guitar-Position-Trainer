@@ -12,9 +12,11 @@ export default function App() {
 
       <Fretboard />
 
-      <DraggableBox title="Circle of Fifths" defaultX={350} defaultY={50}>
-        <CircleOfFifths />
-      </DraggableBox>
+      <div className='widget-container'>
+        <DraggableBox title="Circle of Fifths" defaultX={350} defaultY={50}>
+          <CircleOfFifths />
+        </DraggableBox>
+      </div>
     </div>
   );
 }
