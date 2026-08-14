@@ -20,8 +20,8 @@ export default function DraggableBox({
     const dragStartRef = useRef({ x: 0, y: 0 });
 
     const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-        // Only trigger dragging if they click the handle bar, not the interactive content inside
-        if ((e.target as HTMLElement).className !== 'box-handle') return;
+        // SAFE CHECK: Use .closest() in case they click the text span inside the handle
+        if (!(e.target as HTMLElement).closest('.drag-handle')) return;
 
         e.currentTarget.setPointerCapture(e.pointerId);
         setIsDragging(true);
@@ -45,21 +45,6 @@ export default function DraggableBox({
         setIsDragging(false);
         e.currentTarget.releasePointerCapture(e.pointerId);
     };
-
-    const isMobile = window.innerWidth <= 768; // Could also use a React hook for live resizing.
-
-    if (isMobile) {
-        return (
-            <div style={{ backgroundColor: 'white', margin: '10px', borderRadius: '8px', border: '2px solid #333' }}>
-                <div style={{ padding: '10px', backgroundColor: '#333', color: 'white', fontWeight: 'bold' }}>
-                    {title}
-                </div>
-                <div style={{ padding: '15px' }}>
-                    {children}
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div
@@ -100,7 +85,7 @@ export default function DraggableBox({
                 }}
             >
                 {title}
-                <span style={{ fontSize: '0.7rem', opacity: 0.5 }}>::: GRAB HERE :::</span>
+                <span style={{ fontSize: '0.7rem', opacity: 0.5, pointerEvents: 'none' }}>::: GRAB HERE :::</span>
             </div>
 
             {/* Inner Content Component Sandbox */}
