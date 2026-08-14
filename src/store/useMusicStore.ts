@@ -132,15 +132,53 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
     handlePositionChange: (newPos) => {
         const state = get();
+
+        // 1. LOCK MODE: KEY - Keep the key, snap to the closest valid shape!
+        if (state.lockMode === 'key') {
+            const targetChroma = Note.get(state.currentKey).chroma;
+            let closestDist = Infinity;
+            let bestPos = state.position;
+            let bestType = state.fingeringType;
+
+            // Search through every single Berklee shape
+            for (const [typeKey, rootDef] of Object.entries(rootDefinitions)) {
+                const stringNotes = state.fretboardData[rootDef.string];
+
+                // Find all frets on this string that match our locked key
+                const targetNotes = stringNotes.filter(f => Note.get(f.pitchClass).chroma === targetChroma);
+
+                for (const targetNote of targetNotes) {
+                    // Calculate where the position box would land for this shape
+                    const calcPos = targetNote.fret - rootDef.offset;
+
+                    // Only consider it if it stays on the physical fretboard
+                    if (calcPos >= 1 && calcPos <= 24) {
+                        const dist = Math.abs(calcPos - newPos);
+
+                        // If this is the closest shape we've found to the user's mouse, save it!
+                        if (dist < closestDist) {
+                            closestDist = dist;
+                            bestPos = calcPos;
+                            bestType = typeKey as FingeringType;
+                        }
+                    }
+                }
+            }
+
+            // Snap the position box and change the shape!
+            set({ position: bestPos, fingeringType: bestType });
+            return;
+        }
+
+        // 2. FREE MOVEMENT - Slide the box and calculate the new key
         const rootDef = rootDefinitions[state.fingeringType];
         const rootStringData = state.fretboardData[rootDef.string];
         const rootNoteData = rootStringData.find(f => f.fret === newPos + rootDef.offset);
 
         if (rootNoteData && rootNoteData.chroma !== undefined) {
-            // Update BOTH the position and the new Key!
             set({ position: newPos, currentKey: CHROMA_TO_KEY[rootNoteData.chroma] });
         } else {
             set({ position: newPos });
         }
-    },
+    }
 }));
