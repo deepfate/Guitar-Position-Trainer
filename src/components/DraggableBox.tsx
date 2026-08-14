@@ -15,7 +15,7 @@ export default function DraggableBox({
 }: DraggableBoxProps) {
     const [position, setPosition] = useState({ x: defaultX, y: defaultY });
     const [isDragging, setIsDragging] = useState(false);
-    
+
     // Store where the mouse grabbed inside the handle bar relative to the box's edges
     const dragStartRef = useRef({ x: 0, y: 0 });
 
@@ -34,7 +34,7 @@ export default function DraggableBox({
 
     const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
         if (!isDragging) return;
-        
+
         setPosition({
             x: e.clientX - dragStartRef.current.x,
             y: e.clientY - dragStartRef.current.y
@@ -48,16 +48,16 @@ export default function DraggableBox({
 
     const isMobile = window.innerWidth <= 768; // Could also use a React hook for live resizing.
 
-    if(isMobile){
+    if (isMobile) {
         return (
-        <div style={{ backgroundColor: 'white', margin: '10px', borderRadius: '8px', border: '2px solid #333' }}>
-            <div style={{ padding: '10px', backgroundColor: '#333', color: 'white', fontWeight: 'bold' }}>
-                {title}
+            <div style={{ backgroundColor: 'white', margin: '10px', borderRadius: '8px', border: '2px solid #333' }}>
+                <div style={{ padding: '10px', backgroundColor: '#333', color: 'white', fontWeight: 'bold' }}>
+                    {title}
+                </div>
+                <div style={{ padding: '15px' }}>
+                    {children}
+                </div>
             </div>
-            <div style={{ padding: '15px' }}>
-                {children}
-            </div>
-        </div>
         );
     }
 
@@ -77,7 +77,6 @@ export default function DraggableBox({
                 zIndex: isDragging ? 100 : 10,
                 display: 'inline-flex',
                 flexDirection: 'column',
-                userSelect: 'none',
                 transform: isDragging ? 'scale(1.01)' : 'scale(1)',
                 transition: isDragging ? 'none' : 'transform 0.1s ease, box-shadow 0.1s ease'
             }}
@@ -85,7 +84,7 @@ export default function DraggableBox({
             {/* Grab Handle Bar */}
             <div
                 className="drag-handle"
-            onPointerDown={handlePointerDown}
+                onPointerDown={handlePointerDown}
                 style={{
                     backgroundColor: '#333',
                     color: 'white',
@@ -98,7 +97,6 @@ export default function DraggableBox({
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                touchAction: 'none',
                 }}
             >
                 {title}
